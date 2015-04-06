@@ -1,4 +1,13 @@
 <?php
+/**
+ * Plugin Name: Featured Images in Feeds
+ * Description: Adds new feeds that include featured images as enclosures
+ * Version: 0.1
+ * Author: Curtiss Grymala
+ * Author URI: http://www.umw.edu/
+ * License: GPL2
+ */
+
 add_action( 'init', 'umw_add_feed_with_features' );
 function umw_add_feed_with_features() {
 	add_feed( 'with-features', 'umw_feed_with_features' );
