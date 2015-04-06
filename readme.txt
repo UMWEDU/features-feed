@@ -1,50 +1,42 @@
-# Featured Images in Feeds #
-**Contributors:** [cgrymala](https://profiles.wordpress.org/cgrymala)
-
-**Donate link:** http://giving.umw.edu/
-
-**Tags:** feeds, featured images, thumbnails, rss, atom
-
-**Requires at least:** 3.9.1
-
-**Tested up to:** 4.1.1
-
-**Stable tag:** 1.0
-
-**License:** GPLv2 or later
-
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
-
+=== Featured Images in Feeds ===
+Contributors: cgrymala
+Donate link: http://giving.umw.edu/
+Tags: feeds, featured images, thumbnails, rss, atom
+Requires at least: 3.9.1
+Tested up to: 4.1.1
+Stable tag: 1.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Implements a new feed within WordPress that includes the featured images as enclosures
 
-## Description ##
+== Description ==
 
 This plugin adds a new feed format to WordPress installations that automatically includes the featured image for each piece of content as an enclosure. Rather than modifying the standard WordPress feeds, this plugin creates a new format of feed, to avoid using the featured image when it's not necessary. The featured image enclosures are fully compatible with other enclosures that may already be included in the standard feeds.
 
 You can adjust the size of the images included as enclosures. Because of the processing power that is required in order to include large files as enclosures, it's recommended that you configure the plugin to use the smallest viable version of images for the intended purpose.
 
-## Installation ##
+== Installation ==
 
 1. Upload `features-feed.php` to the `/wp-content/mu-plugins/` directory
 
-## Frequently Asked Questions ##
+== Frequently Asked Questions ==
 
-### How do I access the new feed created by this plugin? ###
+= How do I access the new feed created by this plugin? =
 
 Simply append /with-features/ or /with-thumbs/ to the end of your original feed URL. For instance, if your main feed is located at http://www.example.org/feed/, you can access the new feeds at http://www.example.org/feed/with-features/ and http://www.example.org/feed/with-thumbs/
 
-### What is the difference between the features feed and the thumbs feed? ###
+= What is the difference between the features feed and the thumbs feed? =
 
 The main features feed only includes the "large" image size, and is not configurable beyond that. The thumbs feed allows you to specify, using an extra parameter, the size of image you would like it to attempt to include.
 
-### How do I adjust the image size in the thumbs feed? ###
+= How do I adjust the image size in the thumbs feed? =
 
 Simply append a "size" query parameter to the feed. That query parameter can accept a named WordPress image size (such as "large", "medium" or "thumbnail") or it can accept a height & width parameter, separated by either the pipe character (`|`) or the asterisk character (`*`).
 
 For instance, to use the thumbnail size in the feed, you could use http://www.example.org/feed/with-thumbs/?size=thumbnail; to use the size closest to 100px wide by 150px tall, you could use http://www.example.org/feed/with-thumbs/?size=100|150 or http://www.example.org/feed/with-thumbs/?size=100*150.
 
-### Why are my enclosures not cropped/resized exactly the way I want them? ###
+= Why are my enclosures not cropped/resized exactly the way I want them? =
 
 This plugin creates two new image sizes:
 
@@ -53,7 +45,7 @@ This plugin creates two new image sizes:
 
 Other than that, it does not create any additional image sizes, to it is entirely dependent on the image sizes that already exist within your WordPress installation. If you need images to be cropped/sized to exact specifications, you will need to register those image sizes yourself, and then run the [Regenerate Thumbnails](https://wordpress.org/plugins/regenerate-thumbnails/) plugin to generate those appropriate sizes.
 
-## Changelog ##
+== Changelog ==
 
-### 0.1 ###
+= 0.1 =
 * Initial tracked version
