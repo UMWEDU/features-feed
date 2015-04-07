@@ -47,5 +47,8 @@ Other than that, it does not create any additional image sizes, to it is entirel
 
 == Changelog ==
 
+= 0.2 =
+* Begin converting plugin to OOP
+
 = 0.1 =
 * Initial tracked version
