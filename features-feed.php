@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Featured Images in Feeds
  * Description: Adds new feeds that include featured images as enclosures
- * Version: 0.2
+ * Version: 0.3
  * Author: Curtiss Grymala
  * Author URI: http://www.umw.edu/
  * License: GPL2
@@ -15,6 +15,19 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 		
 		function __construct() {
 			add_action( 'init', array( $this, 'add_feeds' ) );
+			add_action( 'pre_get_posts', array( $this, 'do_post_offset' ), 99 );
+		}
+		
+		function do_post_offset( $query ) {
+			if ( ! $query->is_main_query() || ! $query->is_feed() )
+				return;
+			
+			if ( isset( $_GET['offset'] ) && is_numeric( $_GET['offset'] ) ) {
+				$query->set( 'offset', $_GET['offset'] );
+			}
+			if ( isset( $_GET['posts'] ) && is_numeric( $_GET['posts'] ) ) {
+				$query->set( 'posts_per_rss', $_GET['posts'] );
+			}
 		}
 		
 		function add_feeds() {

@@ -16,13 +16,15 @@
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
 
-Implements a new feed within WordPress that includes the featured images as enclosures
+Implements a new feed within WordPress that includes the featured images as enclosures. Also adds query parameters to all feeds that allow you to specify a post offset or change the number of posts included in the feed.
 
 ## Description ##
 
 This plugin adds a new feed format to WordPress installations that automatically includes the featured image for each piece of content as an enclosure. Rather than modifying the standard WordPress feeds, this plugin creates a new format of feed, to avoid using the featured image when it's not necessary. The featured image enclosures are fully compatible with other enclosures that may already be included in the standard feeds.
 
 You can adjust the size of the images included as enclosures. Because of the processing power that is required in order to include large files as enclosures, it's recommended that you configure the plugin to use the smallest viable version of images for the intended purpose.
+
+This plugin also adds two new query parameters that can be used to control the behavior of all feeds within your WordPress installation. These query parameters allow you to specify an offset (skip the first X number of posts - using the `posts` parameter) and allows you to specify how many items should be included in the feed (using the `posts` query parameter).
 
 ## Installation ##
 
@@ -53,7 +55,23 @@ This plugin creates two new image sizes:
 
 Other than that, it does not create any additional image sizes, to it is entirely dependent on the image sizes that already exist within your WordPress installation. If you need images to be cropped/sized to exact specifications, you will need to register those image sizes yourself, and then run the [Regenerate Thumbnails](https://wordpress.org/plugins/regenerate-thumbnails/) plugin to generate those appropriate sizes.
 
+### How do I use the `offset` and `posts` parameters? ###
+
+Let's say your feed is located at http://example.org/feed/. If you want to skip the first 3 posts that would normally appear in that feed, you can go to http://example.org/feed/?offset=3 instead.
+
+If you want to load 27 items in your feed, rather than whatever your admin settings indicate, you can go to http://example.org/feed/?posts=27.
+
+If you want to skip the first 3 items that would normally load in your feed, and output 27 items in your feed, you would go to http://example.org/feed/?offset=3&posts=27.
+
+These parameters should work on all feeds within your installation. You can even use them in combination with the featured images feeds, such as http://example.org/feed/with-thumbs/?size=100|150&offset=3&posts=27.
+
 ## Changelog ##
+
+### 0.3 ###
+* Add `posts` and `offset` parameters to allow control over feed output
+
+### 0.2 ###
+* Begin converting plugin to OOP
 
 ### 0.1 ###
 * Initial tracked version
