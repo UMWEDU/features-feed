@@ -18,6 +18,8 @@ You can adjust the size of the images included as enclosures. Because of the pro
 
 This plugin also adds two new query parameters that can be used to control the behavior of all feeds within your WordPress installation. These query parameters allow you to specify an offset (skip the first X number of posts - using the `posts` parameter) and allows you to specify how many items should be included in the feed (using the `posts` query parameter).
 
+Finally, this plugin adds an extra feed that allows you to pull multiple sizes of the featured image as enclosures. You can use the `with-custom-features` feed to pull multiple sizes. For this method, you will need to separate the different sizes with a pipe character (`|`) and, if you are defining width & height, you will need to separate those with an asterisk (`*`). Usage might look like `http://www.example.com/feed/with-custom-features?size=50px-thumb|1140*400`, which would pull a 50x50 thumbnail and an image closest to 1140px wide & 400px tall.
+
 == Installation ==
 
 1. Upload `features-feed.php` to the `/wp-content/mu-plugins/` directory
