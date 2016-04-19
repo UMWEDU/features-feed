@@ -43,7 +43,11 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 						$this->set_att( $tmp, intval( $v ) );
 						break;
 					case 'debug' : 
-						$this->set_att( $tmp, ! in_array( $v, array( 0, '0', false, 'false' ), true ) );
+						if ( in_array( $v, array( 0, '0', false, 'false' ), true ) ) {
+							$this->set_att( $tmp, false );
+						} else {
+							$this->set_att( $tmp, true );
+						}
 						break;
 					default : 
 						$this->set_att( $tmp, $v );
@@ -64,7 +68,7 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 					return intval( $this->atts[$key] );
 					break;
 				case 'debug' : 
-					return ( ! in_array( $v, array( 0, '0', false, 'false' ), true ) ) ? true : false;
+					return (bool)$this->atts[$key];
 					break;
 				default : 
 					return $this->atts[$key];
@@ -86,10 +90,10 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 			if ( ! $query->is_main_query() || ! $query->is_feed() )
 				return;
 			
-			if ( ! empty( $this->get_att( 'offset' ) ) {
+			if ( ! empty( $this->get_att( 'offset' ) ) ) {
 				$query->set( 'offset', $this->get_att( 'offset' ) );
 			}
-			if ( ! empty( $this->get_att( 'posts' ) ) {
+			if ( ! empty( $this->get_att( 'posts' ) ) ) {
 				$query->set( 'posts_per_rss', $this->get_att( 'posts' ) );
 			}
 		}
@@ -195,7 +199,7 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 				return null;
 			}
 			
-			if ( ! empty( $this->get_att( 'size' ) ) {
+			if ( ! empty( $this->get_att( 'size' ) ) ) {
 				$size = $this->get_att( 'size' );
 				if ( strstr( $size, '|' ) )
 					$size = explode( '|', $size );
@@ -273,7 +277,7 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 				return null;
 			}
 			
-			if ( ! empty( $this->get_att( 'size' ) ) {
+			if ( ! empty( $this->get_att( 'size' ) ) ) {
 				$size = $this->get_att( 'size' );
 				$sizes = array();
 				// Split out the multiple sizes first
