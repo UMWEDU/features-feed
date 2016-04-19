@@ -90,11 +90,13 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 			if ( ! $query->is_main_query() || ! $query->is_feed() )
 				return;
 			
-			if ( ! empty( $this->get_att( 'offset' ) ) ) {
-				$query->set( 'offset', $this->get_att( 'offset' ) );
+			$offset = $this->get_att( 'offset' );
+			if ( ! empty( $offset ) ) {
+				$query->set( 'offset', $offset );
 			}
-			if ( ! empty( $this->get_att( 'posts' ) ) ) {
-				$query->set( 'posts_per_rss', $this->get_att( 'posts' ) );
+			$posts = $this->get_att( 'posts' );
+			if ( ! empty( $posts ) ) {
+				$query->set( 'posts_per_rss', $posts );
 			}
 		}
 		
@@ -199,8 +201,8 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 				return null;
 			}
 			
-			if ( ! empty( $this->get_att( 'size' ) ) ) {
-				$size = $this->get_att( 'size' );
+			$size = $this->get_att( 'size' );
+			if ( ! empty( $size ) ) {
 				if ( strstr( $size, '|' ) )
 					$size = explode( '|', $size );
 				else if ( strstr( $size, '*' ) )
@@ -277,8 +279,8 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 				return null;
 			}
 			
-			if ( ! empty( $this->get_att( 'size' ) ) ) {
-				$size = $this->get_att( 'size' );
+			$size = $this->get_att( 'size' );
+			if ( ! empty( $size ) ) {
 				$sizes = array();
 				// Split out the multiple sizes first
 				$tmp = explode( '|', $size );
