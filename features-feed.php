@@ -12,21 +12,85 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 	class Featured_Images_in_Feeds {
 		private $umw_upload_basedir;
 		private $umw_upload_baseurl;
+		private $atts=array( 'offset' => 0, 'posts' => 10, 'size' => null, 'debug' => false );
 		
 		function __construct() {
 			add_action( 'init', array( $this, 'add_feeds' ) );
 			add_action( 'pre_get_posts', array( $this, 'do_post_offset' ), 99 );
+			$this->get_atts();
+		}
+		
+		/**
+		 * Process the GET/REQUEST parameters and store them as attributes
+		 */
+		function get_atts() {
+			if ( ! array_key_exists( 'posts', $_REQUEST ) && ! array_key_exists( 'amp;posts', $_REQUEST ) ) {
+				$this->atts['posts'] = get_option( 'posts_per_rss', 10 );
+			}
+			
+			foreach ( $_REQUEST as $k=>$v ) {
+				if ( substr( $k, 0, strlen( 'amp;' ) ) == 'amp;' ) {
+					$tmp = substr( $k, strlen( 'amp;' ) );
+				} else {
+					$tmp = $k; 
+				}
+				if ( ! array_key_exists( $tmp, $this->atts ) ) {
+					continue;
+				}
+				switch( $tmp ) {
+					case 'offset' : 
+					case 'posts' :
+						$this->set_att( $tmp, intval( $v ) );
+						break;
+					case 'debug' : 
+						$this->set_att( $tmp, ! in_array( $v, array( 0, '0', false, 'false' ), true ) );
+						break;
+					default : 
+						$this->set_att( $tmp, $v );
+						break;
+				}
+			}
+		}
+		
+		/**
+		 * Retrieve an attribute and return it
+		 * @param string $key the key of the option being returned
+		 * @return mixed the value of the option
+		 */
+		function get_att( $key ) {
+			switch( $key ) {
+				case 'offset' : 
+				case 'posts' : 
+					return intval( $this->atts[$key] );
+					break;
+				case 'debug' : 
+					return ( ! in_array( $v, array( 0, '0', false, 'false' ), true ) ) ? true : false;
+					break;
+				default : 
+					return $this->atts[$key];
+					break;
+			}
+		}
+		
+		/**
+		 * Set an option in the array of attributes
+		 * @param string $key the key of the option being stored
+		 * @param mixed $val the value being stored for the option
+		 * @return void
+		 */
+		function set_att( $key, $val ) {
+			$this->atts[$key] = $val;
 		}
 		
 		function do_post_offset( $query ) {
 			if ( ! $query->is_main_query() || ! $query->is_feed() )
 				return;
 			
-			if ( isset( $_GET['offset'] ) && is_numeric( $_GET['offset'] ) ) {
-				$query->set( 'offset', $_GET['offset'] );
+			if ( ! empty( $this->get_att( 'offset' ) ) {
+				$query->set( 'offset', $this->get_att( 'offset' ) );
 			}
-			if ( isset( $_GET['posts'] ) && is_numeric( $_GET['posts'] ) ) {
-				$query->set( 'posts_per_rss', $_GET['posts'] );
+			if ( ! empty( $this->get_att( 'posts' ) ) {
+				$query->set( 'posts_per_rss', $this->get_att( 'posts' ) );
 			}
 		}
 		
@@ -63,6 +127,7 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 			}
 			
 			echo apply_filters( 'rss_enclosure', vsprintf( '<enclosure url="%1$s" length="%2$d" type="%3$s" />', $feature ) );
+			/*echo vsprintf( "\n" . '<media:content url="%1$s" type="%3$s" medium="image" />', $feature );*/
 		}
 		
 		function check_enclosures() {
@@ -94,7 +159,7 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 		
 		function feed_with_thumbs( $comment ) {
 			global $wp_query;
-			if ( isset( $_GET['debug'] ) ) {
+			if ( $this->get_att( 'debug' ) ) {
 				print( "\n<!-- Query:\n" );
 				var_dump( $wp_query );
 				print( "\n-->\n" );
@@ -124,23 +189,25 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 		function check_thumb_enclosures() {
 			global $post;
 			if ( ! function_exists( 'has_post_thumbnail' ) || ! has_post_thumbnail( $post->ID ) ) {
-				if ( isset( $_GET['debug'] ) ) {
+				if ( $this->get_att( 'debug' ) ) {
 					print( "<!-- This post does not appear to have a featured image -->\n" );
 				}
 				return null;
 			}
 			
-			if ( isset( $_REQUEST['size'] ) ) {
-				$size = $_REQUEST['size'];
+			if ( ! empty( $this->get_att( 'size' ) ) {
+				$size = $this->get_att( 'size' );
 				if ( strstr( $size, '|' ) )
 					$size = explode( '|', $size );
 				else if ( strstr( $size, '*' ) )
 					$size = explode( '*', $size );
+			} else {
+				$size = 'large';
 			}
 			
 			$feature_id = get_post_thumbnail_id( $post->ID );
 			$feature = wp_get_attachment_image_src( $feature_id, $size );
-			if ( isset( $_GET['debug'] ) ) {
+			if ( $this->get_att( 'debug' ) ) {
 				print( '<!-- Image Information: ' . "\n" );
 				var_dump( $feature );
 				print( ' -->' );
@@ -162,7 +229,7 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 		 */
 		function feed_with_custom_features() {
 			global $wp_query;
-			if ( isset( $_GET['debug'] ) ) {
+			if ( $this->get_att( 'debug' ) ) {
 				print( "\n<!-- Query:\n" );
 				var_dump( $wp_query );
 				print( "\n-->\n" );
@@ -200,14 +267,14 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 		function check_custom_feature_enclosures() {
 			global $post;
 			if ( ! function_exists( 'has_post_thumbnail' ) || ! has_post_thumbnail( $post->ID ) ) {
-				if ( isset( $_GET['debug'] ) ) {
+				if ( $this->get_att( 'debug' ) ) {
 					print( "<!-- This post does not appear to have a featured image -->\n" );
 				}
 				return null;
 			}
 			
-			if ( isset( $_REQUEST['size'] ) ) {
-				$size = $_REQUEST['size'];
+			if ( ! empty( $this->get_att( 'size' ) ) {
+				$size = $this->get_att( 'size' );
 				$sizes = array();
 				// Split out the multiple sizes first
 				$tmp = explode( '|', $size );
@@ -235,7 +302,7 @@ if ( ! class_exists( 'Featured_Images_in_Feeds' ) ) {
 			$encs = array();
 			foreach ( $sizes as $size ) {
 				$feature = wp_get_attachment_image_src( $feature_id, $size );
-				if ( isset( $_GET['debug'] ) ) {
+				if ( $this->get_att( 'debug' ) ) {
 					print( '<!-- Image Information: ' . "\n" );
 					var_dump( $feature );
 					print( ' -->' );
